@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<title>Master bedroom pictures</title>
+<style>
+:root {
+  --bg: #f6f2ec; --panel: #fffdf9; --ink: #2b241e; --muted: #7a6f64; --line: #e4dcd1;
+  --accent: #5b3a24; --love: #2f6b4f; --like: #6f8f5a; --meh: #b08a4a; --no: #a2483a;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink);
+  font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+[hidden] { display: none !important; }
+header { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding: 10px 18px; border-bottom: 1px solid var(--line); background: var(--panel); position: sticky; top: 0; z-index: 5; }
+header h1 { font-size: 17px; margin: 0; font-weight: 600; }
+.who { font-size: 13px; color: var(--muted); }
+.who b { color: var(--ink); }
+.who a { color: var(--accent); cursor: pointer; text-decoration: underline; }
+.grow { flex: 1; }
+.progress { color: var(--muted); font-size: 14px; white-space: nowrap; }
+.sync { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.sync.ok { color: var(--love); } .sync.warn { color: var(--meh); } .sync.bad { color: var(--no); }
+button { font: inherit; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 8px; padding: 7px 12px; cursor: pointer; }
+button:hover { border-color: #c9bba9; }
+button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+nav { display: flex; gap: 6px; flex-wrap: wrap; }
+select { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: #fff; }
+
+#picker { max-width: 520px; margin: 12vh auto; padding: 0 20px; text-align: center; }
+#picker h2 { font-size: 22px; margin: 0 0 8px; }
+#picker p { color: var(--muted); }
+#picker .big { display: block; width: 100%; font-size: 18px; padding: 16px; margin: 12px 0; }
+
+main#rate-view { display: grid; grid-template-columns: 1fr 380px; height: calc(100vh - 54px); }
+.stage { display: flex; align-items: center; justify-content: center; padding: 16px; min-width: 0; min-height: 0; background: #ebe5dc; position: relative; }
+.stage img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 6px; box-shadow: 0 6px 24px rgba(0,0,0,.18); cursor: zoom-in; background: #ddd; }
+.stage .msg { color: var(--muted); text-align: center; padding: 20px; }
+.nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); font-size: 26px; padding: 6px 12px; opacity: .7; }
+.nav-arrow:hover { opacity: 1; }
+.nav-arrow.left { left: 10px; } .nav-arrow.right { right: 10px; }
+aside { background: var(--panel); border-left: 1px solid var(--line); padding: 16px 18px; overflow-y: auto; }
+.meta { color: var(--muted); font-size: 13px; margin-bottom: 6px; }
+.group { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--accent); font-weight: 600; }
+.desc { font-size: 14px; margin: 2px 0 6px; }
+.remind { color: var(--muted); font-size: 12px; }
+h2.sub { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 16px 0 8px; font-weight: 600; }
+.scores { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.scores button { padding: 12px 4px; font-weight: 600; }
+.scores button small { display: block; font-weight: 400; font-size: 11px; opacity: .7; }
+.scores button.on[data-s="4"] { background: var(--love); border-color: var(--love); }
+.scores button.on[data-s="3"] { background: var(--like); border-color: var(--like); }
+.scores button.on[data-s="2"] { background: var(--meh); border-color: var(--meh); }
+.scores button.on[data-s="1"] { background: var(--no); border-color: var(--no); }
+textarea { width: 100%; min-height: 96px; font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: #fff; resize: vertical; }
+.row { display: flex; gap: 8px; margin-top: 14px; align-items: center; flex-wrap: wrap; }
+.hint { color: var(--muted); font-size: 12px; margin-top: 14px; }
+.done-box { background: #eef5ef; border: 1px solid #cfe3d3; color: var(--love); border-radius: 8px; padding: 10px 12px; margin-top: 12px; font-size: 14px; }
+a { color: var(--accent); }
+
+.toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 14px 20px 0; color: var(--muted); font-size: 14px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; padding: 14px 20px 40px; }
+.tile { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; cursor: pointer; }
+.tile img { width: 100%; height: 180px; object-fit: cover; display: block; background: #ddd; }
+.tile .cap { padding: 7px 9px; font-size: 12px; color: var(--muted); }
+.tile .badges { display: flex; gap: 4px; flex-wrap: wrap; padding: 0 9px 4px; }
+.badge { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 6px; background: #ddd; color: #333; }
+.badge.s4 { background: var(--love); color: #fff; } .badge.s3 { background: var(--like); color: #fff; }
+.badge.s2 { background: var(--meh); color: #fff; } .badge.s1 { background: var(--no); color: #fff; }
+.tile .note { padding: 0 9px 8px; font-size: 12px; color: var(--ink); }
+.tile .note i { color: var(--muted); font-style: normal; }
+.empty { padding: 30px 20px; color: var(--muted); }
+
+.overall { max-width: 760px; margin: 24px auto; padding: 0 20px; }
+.overall textarea { min-height: 200px; }
+
+@media (max-width: 900px) {
+  main#rate-view { grid-template-columns: 1fr; height: auto; }
+  .stage { height: 58vh; padding: 8px; }
+  aside { border-left: 0; }
+  header { position: static; padding: 10px 12px; }
+  .nav-arrow { font-size: 22px; padding: 4px 9px; }
+}
+</style>
+</head>
+<body>
+
+<section id="picker" hidden>
+  <h2>Master bedroom pictures</h2>
+  <p>Who is rating on this computer?</p>
+  <button class="big" data-who="husband">Husband</button>
+  <button class="big" data-who="wife">Wife</button>
+  <p style="font-size:13px">Each of you rates separately. You can compare your answers at the end.</p>
+</section>
+
+<div id="app" hidden>
+<header>
+  <h1>Master bedroom pictures</h1>
+  <span class="who">Rating as <b id="who-label"></b> · <a id="switch">switch</a></span>
+  <div class="grow"></div>
+  <span class="progress" id="progress"></span>
+  <span class="sync" id="sync"></span>
+  <nav>
+    <button id="view-rate" class="on">Rate</button>
+    <button id="view-grid">My answers</button>
+    <button id="view-compare">Compare both</button>
+    <button id="view-overall">Overall notes</button>
+  </nav>
+</header>
+
+<main id="rate-view">
+  <div class="stage" id="stage">
+    <button class="nav-arrow left" id="prev-arrow" title="Previous (←)">‹</button>
+    <span class="msg" id="stage-msg">Loading…</span>
+    <img id="photo" alt="" referrerpolicy="no-referrer" hidden>
+    <button class="nav-arrow right" id="next-arrow" title="Next (→)">›</button>
+  </div>
+  <aside>
+    <div class="meta" id="meta"></div>
+    <div class="group" id="group"></div>
+    <div class="desc" id="desc"></div>
+    <div class="remind">Ignore the colours for now. Judge the wall behind the bed, the bed, the bedside and the lights.</div>
+    <h2 class="sub">How much do you like it?</h2>
+    <div class="scores" id="scores">
+      <button data-s="4">Love<small>key 4</small></button>
+      <button data-s="3">Like<small>key 3</small></button>
+      <button data-s="2">Meh<small>key 2</small></button>
+      <button data-s="1">Dislike<small>key 1</small></button>
+    </div>
+    <h2 class="sub">Comment (the most useful part)</h2>
+    <textarea id="note" placeholder="What you like or dislike: “love this wall”, “lights too fussy”, “too hotel”, “bed too big for the room”…"></textarea>
+    <div class="row">
+      <button id="prev">← Back</button>
+      <div class="grow"></div>
+      <label style="font-size:13px;color:var(--muted)"><input type="checkbox" id="unrated-only" checked> Skip rated</label>
+      <button id="next">Next →</button>
+    </div>
+    <div class="done-box" id="done-box" hidden>All pictures rated. Thank you! Add any overall thoughts under “Overall notes”.</div>
+    <div class="hint">Keys: 1–4 to rate, ← → to move. Click the picture to open it full size. Everything saves by itself.</div>
+    <div class="hint" id="source"></div>
+  </aside>
+</main>
+
+<section id="grid-view" hidden>
+  <div class="toolbar">
+    Show
+    <select id="g-score">
+      <option value="all">all pictures</option>
+      <option value="4">Love</option><option value="3">Like</option><option value="2">Meh</option><option value="1">Dislike</option>
+      <option value="none">not rated yet</option>
+    </select>
+    in
+    <select class="g-group" id="g-group"></select>
+    <span id="g-count"></span>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section id="compare-view" hidden>
+  <div class="toolbar">
+    Show
+    <select id="c-filter">
+      <option value="all">all pictures, best first</option>
+      <option value="both">both like or love</option>
+      <option value="disagree">we disagree</option>
+      <option value="missing">not rated by both yet</option>
+    </select>
+    in
+    <select class="g-group" id="c-group"></select>
+    <button id="c-refresh">Refresh</button>
+    <span id="c-count"></span>
+  </div>
+  <div class="grid" id="cgrid"></div>
+</section>
+
+<section id="overall-view" hidden>
+  <div class="overall">
+    <h2 class="sub">Overall notes</h2>
+    <p style="color:var(--muted)">After rating, write what you noticed across the pictures: the kind of wall behind the bed you keep going back to, the lights, the bedside, what feels “modern classic” to you, and what you never want.</p>
+    <textarea id="general" placeholder="Write freely…"></textarea>
+    <div class="row">
+      <button id="upload-now">Save online now</button>
+      <button id="copy">Copy my answers</button>
+      <span class="sync" id="overall-msg"></span>
+    </div>
+    <p class="hint">Your answers save online for the other person and also stay on this computer. If saving online ever fails, “Copy my answers” lets you paste them into a message instead.</p>
+  </div>
+</section>
+</div>
+
+<script>
+const STORE = "https://api.restful-api.dev/objects/";
+const PEOPLE = {
+  husband: { label: "Husband", id: "ff808181a09d98f701a1ed974c851b29", name: "mbr-rater-a" },
+  wife:    { label: "Wife",    id: "ff808181a09d98f701a1ed974d521b2a", name: "mbr-rater-b" }
+};
+const LABEL = { 4: "Love", 3: "Like", 2: "Meh", 1: "Dislike" };
+const $ = id => document.getElementById(id);
+
+let items = [], deck = [], idx = 0, who = null, P = null;
+let mine = { items: {}, general: "", general_updated: "" };
+let pending = 0, firstPendingAt = 0, syncing = false, lastOk = null;
+const broken = new Set();
+
+function nowIso() { return new Date().toISOString(); }
+function blank() { return { items: {}, general: "", general_updated: "" }; }
+function localKey(w) { return "mbr-rater-" + (w || who); }
+function readLocal(w) { try { return JSON.parse(localStorage.getItem(localKey(w)) || "null"); } catch (e) { return null; } }
+function saveLocal() { try { localStorage.setItem(localKey(), JSON.stringify(mine)); } catch (e) {} }
+
+function merge(a, b) {
+  a = a || blank(); b = b || blank();
+  const out = blank();
+  const ids = new Set([...Object.keys(a.items || {}), ...Object.keys(b.items || {})]);
+  for (const id of ids) {
+    const x = (a.items || {})[id], y = (b.items || {})[id];
+    out.items[id] = !x ? y : !y ? x : ((y.updated || "") > (x.updated || "") ? y : x);
+  }
+  if ((b.general_updated || "") > (a.general_updated || "")) { out.general = b.general || ""; out.general_updated = b.general_updated; }
+  else { out.general = a.general || ""; out.general_updated = a.general_updated || ""; }
+  return out;
+}
+
+async function fetchPerson(p) {
+  const r = await fetch(STORE + p.id, { cache: "no-store" });
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  const j = await r.json();
+  return j.data || blank();
+}
+
+function setStatus() {
+  const s = $("sync");
+  if (syncing) { s.className = "sync"; s.textContent = "Saving online…"; return; }
+  if (!pending && lastOk !== false) { s.className = "sync ok"; s.textContent = "All saved online"; return; }
+  if (lastOk === false) { s.className = "sync bad"; s.textContent = "Saved on this computer · online save will retry"; return; }
+  s.className = "sync warn"; s.textContent = "Saved on this computer · uploading soon";
+}
+
+function markDirty() {
+  pending++;
+  if (!firstPendingAt) firstPendingAt = Date.now();
+  saveLocal(); setStatus(); maybeSync();
+}
+function maybeSync(force) {
+  if (!pending || syncing) return;
+  if (force || pending >= 8 || Date.now() - firstPendingAt > 90000) syncNow();
+}
+async function syncNow(keepalive) {
+  if (!P) return;
+  syncing = true; setStatus();
+  const sent = pending;
+  try {
+    const r = await fetch(STORE + P.id, { method: "PUT", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: P.name, data: mine }), keepalive: !!keepalive });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    pending = Math.max(0, pending - sent);
+    firstPendingAt = pending ? Date.now() : 0;
+    lastOk = true;
+  } catch (e) {
+    lastOk = false; firstPendingAt = Date.now();
+  }
+  syncing = false; setStatus();
+  return lastOk;
+}
+setInterval(() => maybeSync(), 15000);
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && pending && !syncing) syncNow(true); });
+
+function entry(id) { return mine.items[id] || { score: null, note: "" }; }
+function current() { return deck[idx]; }
+function setEntry(it, patch) {
+  const e = Object.assign({}, entry(it.id), patch, { updated: nowIso() });
+  mine.items[it.id] = e;
+  markDirty();
+  render();
+}
+function ratedCount() { return deck.filter(it => entry(it.id).score).length; }
+
+function render() {
+  const n = deck.length, done = ratedCount();
+  $("progress").textContent = n ? `${done} of ${n} rated` : "";
+  $("done-box").hidden = !(n && done === n);
+  const it = current();
+  if (!it) { $("stage-msg").textContent = n ? "" : "Loading pictures…"; return; }
+  const photo = $("photo");
+  if (photo.dataset.id !== it.id) {
+    photo.hidden = true; $("stage-msg").textContent = "Loading picture…";
+    photo.onload = () => { photo.hidden = false; $("stage-msg").textContent = ""; };
+    photo.onerror = () => {
+      if (it.thumb_url && photo.src !== it.thumb_url) { photo.src = it.thumb_url; }
+      else { $("stage-msg").textContent = "This picture did not load. Press Next to skip it."; broken.add(it.id); }
+    };
+    photo.dataset.id = it.id; photo.src = it.image_url;
+    for (const k of [1, 2]) {
+      const nx = deck[(idx + k) % n];
+      if (nx && !nx._pre) { const im = new Image(); im.referrerPolicy = "no-referrer"; im.src = nx.image_url; nx._pre = im; }
+    }
+  }
+  const e = entry(it.id);
+  $("meta").textContent = `Picture ${idx + 1} of ${n}`;
+  $("group").textContent = it.group || "";
+  $("desc").textContent = it.description || "";
+  document.querySelectorAll("#scores button").forEach(b => b.classList.toggle("on", String(e.score) === b.dataset.s));
+  if (document.activeElement !== $("note")) $("note").value = e.note || "";
+  const src = $("source"); src.textContent = "";
+  if (it.page_url) { src.append("Source: "); const a = document.createElement("a"); a.href = it.page_url; a.target = "_blank"; a.rel = "noopener noreferrer"; a.textContent = it.site || "page"; src.append(a); }
+}
+
+function move(step) {
+  if (!deck.length) return;
+  const skip = $("unrated-only").checked;
+  let j = idx;
+  for (let k = 0; k < deck.length; k++) {
+    j = (j + step + deck.length) % deck.length;
+    if (!skip || !entry(deck[j].id).score) break;
+  }
+  idx = j; render();
+}
+
+function setScore(s) {
+  const it = current(); if (!it) return;
+  setEntry(it, { score: s });
+  if (ratedCount() === deck.length) maybeSync(true);
+}
+
+function groups() { return [...new Set(items.map(it => it.group))]; }
+function fillGroupSelects() {
+  document.querySelectorAll(".g-group").forEach(sel => {
+    sel.innerHTML = "";
+    const o = document.createElement("option"); o.value = "all"; o.textContent = "every group"; sel.append(o);
+    for (const g of groups()) { const x = document.createElement("option"); x.value = g; x.textContent = g; sel.append(x); }
+  });
+}
+
+function tile(it, onClick) {
+  const t = document.createElement("div"); t.className = "tile";
+  const im = document.createElement("img"); im.loading = "lazy"; im.referrerPolicy = "no-referrer"; im.alt = "";
+  im.onerror = function () { if (it.thumb_url && this.src !== it.thumb_url) this.src = it.thumb_url; };
+  im.src = it.image_url;
+  t.append(im);
+  t.onclick = onClick;
+  return t;
+}
+function badge(text, s) { const b = document.createElement("span"); b.className = "badge" + (s ? " s" + s : ""); b.textContent = text; return b; }
+
+function renderGrid() {
+  const g = $("grid"); g.innerHTML = "";
+  const sf = $("g-score").value, gf = $("g-group").value;
+  let shown = 0;
+  deck.forEach((it, i) => {
+    const e = entry(it.id);
+    if (gf !== "all" && it.group !== gf) return;
+    if (sf === "none" && e.score) return;
+    if (sf !== "all" && sf !== "none" && String(e.score) !== sf) return;
+    const t = tile(it, () => { idx = i; show("rate"); });
+    const bs = document.createElement("div"); bs.className = "badges";
+    bs.append(badge(e.score ? LABEL[e.score] : "Not rated", e.score));
+    const cap = document.createElement("div"); cap.className = "cap"; cap.textContent = it.group;
+    t.append(bs, cap);
+    if (e.note) { const nt = document.createElement("div"); nt.className = "note"; nt.textContent = e.note; t.append(nt); }
+    g.append(t); shown++;
+  });
+  $("g-count").textContent = `${shown} shown`;
+  if (!shown) g.innerHTML = '<div class="empty">Nothing matches this filter.</div>';
+}
+
+let others = {};
+async function loadCompare() {
+  $("c-count").textContent = "Loading both sets of answers…";
+  for (const [w, p] of Object.entries(PEOPLE)) {
+    let cloud = null;
+    try { cloud = await fetchPerson(p); } catch (e) {}
+    others[w] = w === who ? merge(cloud, mine) : merge(cloud, readLocal(w));
+  }
+  renderCompare();
+}
+function renderCompare() {
+  const g = $("cgrid"); g.innerHTML = "";
+  const f = $("c-filter").value, gf = $("c-group").value;
+  const ws = Object.keys(PEOPLE);
+  const rows = deck.map((it, i) => {
+    const sc = ws.map(w => ((others[w] || blank()).items[it.id] || {}).score || null);
+    const sum = sc.reduce((a, b) => a + (b || 0), 0);
+    return { it, i, sc, sum };
+  }).filter(r => {
+    if (gf !== "all" && r.it.group !== gf) return false;
+    const [a, b] = r.sc;
+    if (f === "both") return a >= 3 && b >= 3;
+    if (f === "disagree") return a && b && Math.abs(a - b) >= 2;
+    if (f === "missing") return !a || !b;
+    return true;
+  }).sort((x, y) => y.sum - x.sum);
+  for (const r of rows) {
+    const t = tile(r.it, () => { idx = r.i; show("rate"); });
+    const bs = document.createElement("div"); bs.className = "badges";
+    ws.forEach((w, k) => bs.append(badge(PEOPLE[w].label + ": " + (r.sc[k] ? LABEL[r.sc[k]] : "–"), r.sc[k])));
+    const cap = document.createElement("div"); cap.className = "cap"; cap.textContent = r.it.group;
+    t.append(bs, cap);
+    ws.forEach(w => {
+      const n = ((others[w] || blank()).items[r.it.id] || {}).note;
+      if (n) { const nt = document.createElement("div"); nt.className = "note"; const lab = document.createElement("i"); lab.textContent = PEOPLE[w].label + ": "; nt.append(lab, n); t.append(nt); }
+    });
+    g.append(t);
+  }
+  const counts = ws.map(w => `${PEOPLE[w].label} rated ${Object.values((others[w] || blank()).items).filter(e => e && e.score).length}`).join(" · ");
+  $("c-count").textContent = `${rows.length} shown · ${counts}`;
+  if (!rows.length) g.innerHTML = '<div class="empty">Nothing matches this filter yet.</div>';
+}
+
+function show(view) {
+  $("rate-view").hidden = view !== "rate";
+  $("grid-view").hidden = view !== "grid";
+  $("compare-view").hidden = view !== "compare";
+  $("overall-view").hidden = view !== "overall";
+  ["rate", "grid", "compare", "overall"].forEach(v => $("view-" + v).classList.toggle("on", v === view));
+  if (view === "grid") renderGrid();
+  if (view === "compare") loadCompare();
+  render();
+  window.scrollTo(0, 0);
+}
+
+async function start(w) {
+  who = w; P = PEOPLE[w];
+  try { localStorage.setItem("mbr-who", w); } catch (e) {}
+  $("picker").hidden = true; $("app").hidden = false;
+  $("who-label").textContent = P.label;
+  const local = readLocal(w);
+  let cloud = null;
+  try { cloud = await fetchPerson(P); lastOk = true; } catch (e) { lastOk = false; }
+  mine = merge(cloud, local);
+  if (local && JSON.stringify(mine) !== JSON.stringify(merge(cloud, null))) { pending = 1; firstPendingAt = Date.now() - 80000; }
+  saveLocal();
+  $("general").value = mine.general || "";
+  const firstUnrated = deck.findIndex(it => !entry(it.id).score);
+  idx = firstUnrated >= 0 ? firstUnrated : 0;
+  setStatus(); show("rate");
+}
+function pick() {
+  $("app").hidden = true; $("picker").hidden = false;
+}
+
+async function boot() {
+  try { items = await (await fetch("items.json", { cache: "no-store" })).json(); } catch (e) { items = []; }
+  deck = items.slice();
+  fillGroupSelects();
+  const h = (location.hash || "").replace("#", "").toLowerCase();
+  let w = PEOPLE[h] ? h : null;
+  if (!w) { try { const s = localStorage.getItem("mbr-who"); if (PEOPLE[s]) w = s; } catch (e) {} }
+  if (w) start(w); else pick();
+}
+
+document.querySelectorAll("#picker .big").forEach(b => b.onclick = () => start(b.dataset.who));
+$("switch").onclick = async () => { if (pending) await syncNow(); try { localStorage.removeItem("mbr-who"); } catch (e) {} history.replaceState(null, "", location.pathname); pick(); };
+document.querySelectorAll("#scores button").forEach(b => b.onclick = () => setScore(Number(b.dataset.s)));
+$("prev").onclick = $("prev-arrow").onclick = () => move(-1);
+$("next").onclick = $("next-arrow").onclick = () => move(1);
+$("photo").onclick = () => { const it = current(); if (it) window.open($("photo").src, "_blank", "noopener,noreferrer"); };
+let noteTimer = null;
+$("note").oninput = () => {
+  const it = current(); if (!it) return;
+  const v = $("note").value;
+  mine.items[it.id] = Object.assign({}, entry(it.id), { note: v, updated: nowIso() });
+  saveLocal();
+  clearTimeout(noteTimer); noteTimer = setTimeout(() => markDirty(), 800);
+};
+let gTimer = null;
+$("general").oninput = () => {
+  mine.general = $("general").value; mine.general_updated = nowIso(); saveLocal();
+  clearTimeout(gTimer); gTimer = setTimeout(() => markDirty(), 800);
+};
+$("upload-now").onclick = async () => { $("overall-msg").textContent = "Saving…"; const ok = await syncNow(); $("overall-msg").textContent = ok ? "Saved online." : "Could not save online just now. Your answers are kept on this computer."; };
+$("copy").onclick = async () => {
+  const lines = [`Master bedroom ratings (${P.label})`];
+  for (const it of deck) { const e = entry(it.id); if (e.score || e.note) lines.push(`${it.id}: ${e.score ? LABEL[e.score] : "-"}${e.note ? " | " + e.note : ""}`); }
+  if (mine.general) lines.push("Overall: " + mine.general);
+  try { await navigator.clipboard.writeText(lines.join("\n")); $("overall-msg").textContent = "Copied. Paste it into a message."; }
+  catch (e) { $("overall-msg").textContent = "Copy was blocked by the browser."; }
+};
+$("view-rate").onclick = () => show("rate");
+$("view-grid").onclick = () => show("grid");
+$("view-compare").onclick = () => show("compare");
+$("view-overall").onclick = () => show("overall");
+$("g-score").onchange = $("g-group").onchange = renderGrid;
+$("c-filter").onchange = $("c-group").onchange = renderCompare;
+$("c-refresh").onclick = loadCompare;
+document.addEventListener("keydown", ev => {
+  if (["TEXTAREA", "INPUT", "SELECT"].includes(document.activeElement.tagName) || $("rate-view").hidden || $("app").hidden) return;
+  if (["1", "2", "3", "4"].includes(ev.key)) setScore(Number(ev.key));
+  else if (ev.key === "ArrowRight") move(1);
+  else if (ev.key === "ArrowLeft") move(-1);
+});
+boot();
+</script>
+</body>
+</html>
