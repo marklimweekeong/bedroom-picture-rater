@@ -103,6 +103,7 @@ a { color: var(--accent); }
   <div class="grow"></div>
   <span class="progress" id="progress"></span>
   <span class="sync" id="sync"></span>
+  <button id="dl-top" title="Save a file with your answers to send over">Download my answers</button>
   <nav>
     <button id="view-rate" class="on">Rate</button>
     <button id="view-grid">My answers</button>
@@ -138,8 +139,8 @@ a { color: var(--accent); }
       <label style="font-size:13px;color:var(--muted)"><input type="checkbox" id="unrated-only" checked> Skip rated</label>
       <button id="next">Next →</button>
     </div>
-    <div class="done-box" id="done-box" hidden>All pictures rated. Thank you! Add any overall thoughts under “Overall notes”.</div>
-    <div class="hint">Keys: 1–4 to rate, ← → to move. Click the picture to open it full size. Everything saves by itself.</div>
+    <div class="done-box" id="done-box" hidden>All pictures rated. Thank you! Add any overall thoughts under “Overall notes”, then press <b>Download my answers</b> and send the file over.</div>
+    <div class="hint">Keys: 1–4 to rate, ← → to move. Click the picture to open it full size. Your answers save by themselves in this browser on this computer. When you finish, press “Download my answers” at the top and send the file.</div>
     <div class="hint" id="source"></div>
   </aside>
 </main>
@@ -170,7 +171,8 @@ a { color: var(--accent); }
     </select>
     in
     <select class="g-group" id="c-group"></select>
-    <button id="c-refresh">Refresh</button>
+    <button id="c-load">Load answers from a file</button>
+    <input type="file" id="c-file" accept=".json,application/json" hidden>
     <span id="c-count"></span>
   </div>
   <div class="grid" id="cgrid"></div>
@@ -182,34 +184,34 @@ a { color: var(--accent); }
     <p style="color:var(--muted)">After rating, write what you noticed across the pictures: the kind of wall behind the bed you keep going back to, the lights, the bedside, what feels “modern classic” to you, and what you never want.</p>
     <textarea id="general" placeholder="Write freely…"></textarea>
     <div class="row">
-      <button id="upload-now">Save online now</button>
+      <button id="dl">Download my answers</button>
       <button id="copy">Copy my answers</button>
       <span class="sync" id="overall-msg"></span>
     </div>
-    <p class="hint">Your answers save online for the other person and also stay on this computer. If saving online ever fails, “Copy my answers” lets you paste them into a message instead.</p>
+    <p class="hint">Your answers are kept in this browser on this computer. “Download my answers” saves them as a small file you can send by WhatsApp or email. You can download again any time; the newest file has everything. To see both of you side by side, open “Compare both” and load the other person’s file.</p>
   </div>
 </section>
 </div>
 
 <script>
-const STORE = "https://api.restful-api.dev/objects/";
 const PEOPLE = {
-  husband: { label: "Husband", id: "ff808181a09d98f701a1ed974c851b29", name: "mbr-rater-a" },
-  wife:    { label: "Wife",    id: "ff808181a09d98f701a1ed974d521b2a", name: "mbr-rater-b" }
+  husband: { label: "Husband" },
+  wife:    { label: "Wife" }
 };
 const LABEL = { 4: "Love", 3: "Like", 2: "Meh", 1: "Dislike" };
 const $ = id => document.getElementById(id);
 
 let items = [], deck = [], idx = 0, who = null, P = null;
 let mine = { items: {}, general: "", general_updated: "" };
-let pending = 0, firstPendingAt = 0, syncing = false, lastOk = null;
+let lastDownload = null;
 const broken = new Set();
 
 function nowIso() { return new Date().toISOString(); }
 function blank() { return { items: {}, general: "", general_updated: "" }; }
 function localKey(w) { return "mbr-rater-" + (w || who); }
 function readLocal(w) { try { return JSON.parse(localStorage.getItem(localKey(w)) || "null"); } catch (e) { return null; } }
-function saveLocal() { try { localStorage.setItem(localKey(), JSON.stringify(mine)); } catch (e) {} }
+let storageOk = true;
+function saveLocal() { try { localStorage.setItem(localKey(), JSON.stringify(mine)); storageOk = true; } catch (e) { storageOk = false; } }
 
 function merge(a, b) {
   a = a || blank(); b = b || blank();
@@ -224,49 +226,43 @@ function merge(a, b) {
   return out;
 }
 
-async function fetchPerson(p) {
-  const r = await fetch(STORE + p.id, { cache: "no-store" });
-  if (!r.ok) throw new Error("HTTP " + r.status);
-  const j = await r.json();
-  return j.data || blank();
-}
-
 function setStatus() {
   const s = $("sync");
-  if (syncing) { s.className = "sync"; s.textContent = "Saving online…"; return; }
-  if (!pending && lastOk !== false) { s.className = "sync ok"; s.textContent = "All saved online"; return; }
-  if (lastOk === false) { s.className = "sync bad"; s.textContent = "Saved on this computer · online save will retry"; return; }
-  s.className = "sync warn"; s.textContent = "Saved on this computer · uploading soon";
+  if (!storageOk) { s.className = "sync bad"; s.textContent = "This browser is not keeping answers · download them now"; return; }
+  s.className = "sync ok";
+  s.textContent = lastDownload ? `Saved on this computer · downloaded at ${lastDownload}` : "Saved on this computer";
 }
+function markDirty() { saveLocal(); setStatus(); }
 
-function markDirty() {
-  pending++;
-  if (!firstPendingAt) firstPendingAt = Date.now();
-  saveLocal(); setStatus(); maybeSync();
+function exportData() {
+  const rows = deck.map(it => {
+    const e = entry(it.id);
+    return { id: it.id, group: it.group, picture: it.description, rating: e.score ? LABEL[e.score] : "", score: e.score || null, note: e.note || "", updated: e.updated || "" };
+  }).filter(x => x.score || x.note);
+  return { app: "master-bedroom-rater", who, person: P.label, exported: nowIso(), rated: rows.filter(r => r.score).length, of: deck.length, general: mine.general || "", items: rows };
 }
-function maybeSync(force) {
-  if (!pending || syncing) return;
-  if (force || pending >= 8 || Date.now() - firstPendingAt > 90000) syncNow();
+function downloadAnswers() {
+  const data = exportData();
+  const blob = new Blob([JSON.stringify(data, null, 1)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `bedroom-answers-${who}-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  lastDownload = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  setStatus();
+  $("overall-msg").textContent = `Downloaded ${data.rated} of ${data.of} answers. Send the file over by WhatsApp or email.`;
 }
-async function syncNow(keepalive) {
-  if (!P) return;
-  syncing = true; setStatus();
-  const sent = pending;
-  try {
-    const r = await fetch(STORE + P.id, { method: "PUT", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: P.name, data: mine }), keepalive: !!keepalive });
-    if (!r.ok) throw new Error("HTTP " + r.status);
-    pending = Math.max(0, pending - sent);
-    firstPendingAt = pending ? Date.now() : 0;
-    lastOk = true;
-  } catch (e) {
-    lastOk = false; firstPendingAt = Date.now();
-  }
-  syncing = false; setStatus();
-  return lastOk;
+function importAnswers(text) {
+  let d; try { d = JSON.parse(text); } catch (e) { return "That file is not an answers file."; }
+  if (!d || d.app !== "master-bedroom-rater" || !PEOPLE[d.who] || !Array.isArray(d.items)) return "That file is not an answers file from this page.";
+  const imp = blank();
+  for (const r of d.items) if (r && r.id) imp.items[r.id] = { score: r.score || null, note: r.note || "", updated: r.updated || d.exported || "" };
+  imp.general = d.general || ""; imp.general_updated = d.exported || "";
+  if (d.who === who) { mine = merge(mine, imp); saveLocal(); $("general").value = mine.general || ""; }
+  else { try { localStorage.setItem(localKey(d.who), JSON.stringify(merge(readLocal(d.who), imp))); } catch (e) { others[d.who] = merge(others[d.who], imp); } }
+  return `Loaded ${PEOPLE[d.who].label}'s answers (${d.items.filter(r => r.score).length} rated).`;
 }
-setInterval(() => maybeSync(), 15000);
-document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && pending && !syncing) syncNow(true); });
 
 function entry(id) { return mine.items[id] || { score: null, note: "" }; }
 function current() { return deck[idx]; }
@@ -322,7 +318,6 @@ function move(step) {
 function setScore(s) {
   const it = current(); if (!it) return;
   setEntry(it, { score: s });
-  if (ratedCount() === deck.length) maybeSync(true);
 }
 
 function groups() { return [...new Set(items.map(it => it.group))]; }
@@ -367,13 +362,8 @@ function renderGrid() {
 }
 
 let others = {};
-async function loadCompare() {
-  $("c-count").textContent = "Loading both sets of answers…";
-  for (const [w, p] of Object.entries(PEOPLE)) {
-    let cloud = null;
-    try { cloud = await fetchPerson(p); } catch (e) {}
-    others[w] = w === who ? merge(cloud, mine) : merge(cloud, readLocal(w));
-  }
+function loadCompare() {
+  for (const w of Object.keys(PEOPLE)) others[w] = w === who ? mine : merge(others[w], readLocal(w));
   renderCompare();
 }
 function renderCompare() {
@@ -404,8 +394,10 @@ function renderCompare() {
     });
     g.append(t);
   }
-  const counts = ws.map(w => `${PEOPLE[w].label} rated ${Object.values((others[w] || blank()).items).filter(e => e && e.score).length}`).join(" · ");
-  $("c-count").textContent = `${rows.length} shown · ${counts}`;
+  const cnt = w => Object.values((others[w] || blank()).items).filter(e => e && e.score).length;
+  const counts = ws.map(w => `${PEOPLE[w].label} rated ${cnt(w)}`).join(" · ");
+  const other = ws.find(w => w !== who);
+  $("c-count").textContent = `${rows.length} shown · ${counts}` + (cnt(other) ? "" : ` · load ${PEOPLE[other].label.toLowerCase()}'s file to see both`);
   if (!rows.length) g.innerHTML = '<div class="empty">Nothing matches this filter yet.</div>';
 }
 
@@ -421,16 +413,12 @@ function show(view) {
   window.scrollTo(0, 0);
 }
 
-async function start(w) {
+function start(w) {
   who = w; P = PEOPLE[w];
   try { localStorage.setItem("mbr-who", w); } catch (e) {}
   $("picker").hidden = true; $("app").hidden = false;
   $("who-label").textContent = P.label;
-  const local = readLocal(w);
-  let cloud = null;
-  try { cloud = await fetchPerson(P); lastOk = true; } catch (e) { lastOk = false; }
-  mine = merge(cloud, local);
-  if (local && JSON.stringify(mine) !== JSON.stringify(merge(cloud, null))) { pending = 1; firstPendingAt = Date.now() - 80000; }
+  mine = merge(readLocal(w), null);
   saveLocal();
   $("general").value = mine.general || "";
   const firstUnrated = deck.findIndex(it => !entry(it.id).score);
@@ -452,7 +440,7 @@ async function boot() {
 }
 
 document.querySelectorAll("#picker .big").forEach(b => b.onclick = () => start(b.dataset.who));
-$("switch").onclick = async () => { if (pending) await syncNow(); try { localStorage.removeItem("mbr-who"); } catch (e) {} history.replaceState(null, "", location.pathname); pick(); };
+$("switch").onclick = () => { try { localStorage.removeItem("mbr-who"); } catch (e) {} history.replaceState(null, "", location.pathname); pick(); };
 document.querySelectorAll("#scores button").forEach(b => b.onclick = () => setScore(Number(b.dataset.s)));
 $("prev").onclick = $("prev-arrow").onclick = () => move(-1);
 $("next").onclick = $("next-arrow").onclick = () => move(1);
@@ -470,7 +458,15 @@ $("general").oninput = () => {
   mine.general = $("general").value; mine.general_updated = nowIso(); saveLocal();
   clearTimeout(gTimer); gTimer = setTimeout(() => markDirty(), 800);
 };
-$("upload-now").onclick = async () => { $("overall-msg").textContent = "Saving…"; const ok = await syncNow(); $("overall-msg").textContent = ok ? "Saved online." : "Could not save online just now. Your answers are kept on this computer."; };
+$("dl").onclick = $("dl-top").onclick = downloadAnswers;
+$("c-load").onclick = () => $("c-file").click();
+$("c-file").onchange = async () => {
+  const f = $("c-file").files[0]; if (!f) return;
+  const msg = importAnswers(await f.text());
+  $("c-file").value = "";
+  loadCompare();
+  $("c-count").textContent = msg + " · " + $("c-count").textContent;
+};
 $("copy").onclick = async () => {
   const lines = [`Master bedroom ratings (${P.label})`];
   for (const it of deck) { const e = entry(it.id); if (e.score || e.note) lines.push(`${it.id}: ${e.score ? LABEL[e.score] : "-"}${e.note ? " | " + e.note : ""}`); }
@@ -484,7 +480,6 @@ $("view-compare").onclick = () => show("compare");
 $("view-overall").onclick = () => show("overall");
 $("g-score").onchange = $("g-group").onchange = renderGrid;
 $("c-filter").onchange = $("c-group").onchange = renderCompare;
-$("c-refresh").onclick = loadCompare;
 document.addEventListener("keydown", ev => {
   if (["TEXTAREA", "INPUT", "SELECT"].includes(document.activeElement.tagName) || $("rate-view").hidden || $("app").hidden) return;
   if (["1", "2", "3", "4"].includes(ev.key)) setScore(Number(ev.key));
